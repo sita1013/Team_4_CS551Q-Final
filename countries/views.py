@@ -59,6 +59,7 @@ def barchart_compare(request):
     selected_year = request.GET.get('year')
     country1_code = request.GET.get('country1')
     country2_code = request.GET.get('country2')
+    chart_type = request.GET.get('chart_type', 'bar')  # Default to 'bar'
     record1 = record2 = None
     income1 = income2 = None
     if selected_year and country1_code and country2_code:
@@ -81,7 +82,6 @@ def barchart_compare(request):
         'record1': record1,
         'record2': record2,
         'income1': income1, 
-        'income2': income2, 
+        'income2': income2,
+        'chart_type': chart_type,
     })
-
-
