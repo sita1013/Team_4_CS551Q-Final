@@ -6,7 +6,7 @@ page where the user can compare two countries using a bar graph.
 
 
 ## Features
-- Hompage = 
+- Homepage = 
   introduces the user to the site with two options to either search for country or compare two countries. 
 - Search for Country =
   gives drop down option for the user to pick country and year. Also can start typing to get
