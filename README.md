@@ -54,7 +54,6 @@ All rights are reserved by the authors (Team 4, 2025).
 
 
 ## Installation
-- python version is set to 3.12.2
 ```bash
 git clone https://github.com/sita1013/Team_4_CS551Q-Final.git
 cd Team_4_CS551Q-Final
