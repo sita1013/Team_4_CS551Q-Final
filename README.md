@@ -40,6 +40,9 @@ Backend: Django 4.x
 Frontend: HTML, Django Templates, Chart.js
 Database: SQLite (development), PostgreSQL (intended for production due to issues found with this and Codio)
 Cloud URL: https://team-4-deployment-1.onrender.com/
+Sign-In Credentions for Render: 
+  user-name = seluvaiasariahita@gmail.com
+  temp-password = secret1234!
 
 ## Notes
 We initially planned to use PostgreSQL for deployment and API-driven frontend interactions.

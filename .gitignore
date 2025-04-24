@@ -37,3 +37,4 @@ dist/
 
 # Jupyter (if used)
 .ipynb_checkpoints/
+gitlog.txt
