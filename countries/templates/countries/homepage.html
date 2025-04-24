@@ -87,16 +87,17 @@
     <div class="intro">
         <p>Welcome!</p> <p>This site helps you explore historical PM2.5 air pollution data by country and year.</p>
     </div>
-
+<!--put path buttons here at the top to make it easier for the user-->
     <a href="{% url 'pm25_lookup' %}" class="btn">Search by Country</a>
     <a href="{% url 'barchart_compare' %}" class="btn">Compare Two Countries</a>
 
-    <!-- chart area -->
+    <!--for the chart display-->
     <div class="chart-container">
         <h2>Top 5 Most Polluted Countries in {{ latest_year }}</h2>
         <canvas id="pm25Chart" height="300"></canvas>
     </div>
 
+<!--python code connected in views-->
     <script>
         const countries = {{ countries_json|safe }};
         const values = {{ values_json|safe }};
@@ -108,7 +109,6 @@
                 datasets: [{
                     label: 'PM2.5 (%)',
                     data: values,
-
                     backgroundColor: 'rgba(164, 244, 236, 0.99)',
                     borderRadius: 8
                 }]
@@ -123,7 +123,6 @@
                         font: {
                             size: 18
                           }
-          
                     },
                     tooltip: {
                         callbacks: {
@@ -142,7 +141,6 @@
                             font: {
                                 size: 14
                               }
-              
                         }
                     }
                 }

@@ -158,9 +158,12 @@
     }
   </style>
 </head>
+
 <body>
+
   <div class="pm-card">
     <div class="pm-title">PM2.5 Levels Search</div>
+    
     <form method="get" class="pm-form">
       <div class="pm-field">
         <label for="country">Country</label>
@@ -210,6 +213,7 @@
       </div>
     </div>
   
+  <!--specifically made to display chart and edit it because was for some reason not able to do it in styles...still don't know why-->
     <script>
       const ctx = document.getElementById('barChart').getContext('2d');
       new Chart(ctx, {

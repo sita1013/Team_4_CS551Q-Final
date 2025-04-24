@@ -1,10 +1,12 @@
 import json
 from django.shortcuts import render
-from .models import PM25Record, Country
+"""from .models import PM25Record, Country""" #commented out since it's redundant 
 from django.db.models import Max
-from .models import CountryMetadata
+"""from .models import CountryMetadata""" #commented out because it's also redundant
 from countries.models import Country, PM25Record, CountryMetadata
 
+#used json to avoid JS on html and render top countries in most recent year
+#this means we can add in data if we want from 2017 - 2015 and it won't break (hopefully)
 def homepage(request):
     latest_year = PM25Record.objects.aggregate(Max('year'))['year__max']
     top_records = PM25Record.objects.filter(year=latest_year).order_by('-value')[:5]
@@ -16,6 +18,7 @@ def homepage(request):
         'latest_year': latest_year,
     })
 
+#looking at a single country with metadat displayed for income levels
 def pm25_lookup_view(request):
     selected_country = request.GET.get('country')
     selected_year = request.GET.get('year')
@@ -53,6 +56,7 @@ def pm25_lookup_view(request):
     }
     return render(request, 'countries/pm25_lookup.html', context)
 
+#comparing two countries with barcharts and displayed data included metadata for income level
 def barchart_compare(request):
     countries = Country.objects.order_by('name')
     years = PM25Record.objects.values_list('year', flat=True).distinct().order_by('year')
@@ -85,3 +89,31 @@ def barchart_compare(request):
         'income2': income2,
         'chart_type': chart_type,
     })
+
+
+#for deployment I added in code below to help get Render to pick up on metadata
+#admittedly got a lot of help from ChatGPT on this one because I didn't know what
+#was happening...but below is the code I used for the metadata in Render with 
+#notes added in so hopefully I can do this on my own in the future
+"""
+from django.http import JsonResponse
+from .models import CountryMetadata #in hindsight this was redundant and didn't need to add this as already at the top
+
+def check_metadata(request): #should fetch all the metadata records in the subfile CountryMetada
+    data = list(CountryMetadata.objects.values())
+    return JsonResponse(data, safe=False) #Json makes it easier for the frontend call
+
+def load_metadata(request):
+    data = [
+        {"code": "KEN", "income_level": "Low"}, #sample of code to push the metadata
+        {"code": "CAN", "income_level": "High"},
+        {"code": "IND", "income_level": "Lower-Middle"},
+    ]
+    for item in data: #to loop through each country code matching the country name and metadata
+        CountryMetadata.objects.update_or_create(
+            code=item["code"], #specific as main data was connected to metadata only by the country code
+            defaults={"income_level": item["income_level"]}
+        )
+# added so I know if the data had loaded in the deployment log
+    return JsonResponse({"status": "Metadata loaded"})
+"""

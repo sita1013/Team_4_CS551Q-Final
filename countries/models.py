@@ -15,7 +15,9 @@ class PM25Record(models.Model):
         ordering = ['country', 'year']
     def __str__(self):
         return f"{self.country.name} - {self.year}: {self.value}"
-    
+
+#inputted new class to render metatdata for income levels
+#this was also added into the views to make sure the metadata is running correctly
 class CountryMetadata(models.Model):
     code = models.CharField(max_length=3, unique=True)
     income_level = models.CharField(max_length=100)
