@@ -46,3 +46,89 @@ class PM25LoadCommandTests(TestCase):
         
         self.assertTrue(Country.objects.filter(code='TST').exists())
         self.assertEqual(PM25Record.objects.filter(country__code='TST').count(), 2)
+    
+class CountriesAppTests(TestCase):
+     def setUp(self):
+         # Create test data
+         self.country1 = Country.objects.create(name='China', code='CHN')
+         self.country2 = Country.objects.create(name='United States', code='USA')
+         
+         # Create PM2.5 records
+         self.pm25_2020_1 = PM25Record.objects.create(
+             country=self.country1,
+             year=2020,
+             value=35.5
+         )
+         self.pm25_2020_2 = PM25Record.objects.create(
+             country=self.country2,
+             year=2020,
+             value=25.0
+         )
+         
+         # Create country metadata
+         self.metadata1 = CountryMetadata.objects.create(
+             code='CHN',
+             income_level='Upper-Middle'
+         )
+         self.metadata2 = CountryMetadata.objects.create(
+             code='USA',
+             income_level='High'
+         )
+ 
+     def test_models(self):
+         # Test Country model
+         self.assertEqual(str(self.country1), 'China')
+         self.assertEqual(str(self.country2), 'United States')
+ 
+         # Test PM25Record model
+         self.assertEqual(str(self.pm25_2020_1), 'China - 2020: 35.5')
+         self.assertEqual(str(self.pm25_2020_2), 'United States - 2020: 25.0')
+ 
+         # Test CountryMetadata model
+         self.assertEqual(str(self.metadata1), 'CHN - Upper-Middle')
+         self.assertEqual(str(self.metadata2), 'USA - High')
+ 
+     def test_homepage_view(self):
+         response = self.client.get(reverse('homepage'))
+         self.assertEqual(response.status_code, 200)
+         self.assertTemplateUsed(response, 'countries/homepage.html')
+         # Check context data
+         self.assertEqual(response.context['latest_year'], 2020)
+ 
+     def test_pm25_lookup_view(self):
+         # Test access without parameters
+         response = self.client.get(reverse('pm25_lookup'))
+         self.assertEqual(response.status_code, 200)
+         self.assertTemplateUsed(response, 'countries/pm25_lookup.html')
+ 
+         # Test access with parameters
+         response = self.client.get(
+             reverse('pm25_lookup'),
+             {'country': 'CHN', 'year': '2020'}
+         )
+         self.assertEqual(response.status_code, 200)
+         self.assertEqual(response.context['record'], self.pm25_2020_1)
+         self.assertEqual(response.context['income_level'], 'Upper-Middle')
+ 
+     def test_barchart_compare_view(self):
+         # Test access without parameters
+         response = self.client.get(reverse('barchart_compare'))
+         self.assertEqual(response.status_code, 200)
+         self.assertTemplateUsed(response, 'countries/barchart_compare.html')
+ 
+         # Test access with parameters
+         response = self.client.get(
+             reverse('barchart_compare'),
+             {
+                 'country1': 'CHN',
+                 'country2': 'USA',
+                 'year': '2020',
+                 'chart_type': 'bar'
+             }
+         )
+         self.assertEqual(response.status_code, 200)
+         self.assertEqual(response.context['record1'], self.pm25_2020_1)
+         self.assertEqual(response.context['record2'], self.pm25_2020_2)
+         self.assertEqual(response.context['income1'], 'Upper-Middle')
+         self.assertEqual(response.context['income2'], 'High')
+ 
